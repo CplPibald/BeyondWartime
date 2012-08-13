@@ -356,12 +356,13 @@ public class War {
 
     		if (sender != null) {
     			sender.sendMessage(message);
-    			sender.sendMessage("Minutes Remaining: "+(endTime.getTime() - now.getTime()) / (1000 * 60));
     		}
             else {
                 broadcastWorldMessage(world, message);
             }
+    		
         }
+		sender.sendMessage("Minutes Remaining: "+(endTime.getTime() - now.getTime()) / (1000 * 60));
         
     }
 
@@ -514,6 +515,7 @@ public class War {
                 econ.bankDeposit(p.getName(), rewardAmount);
                 p.sendMessage("You were rewarded "+ChatColor.GOLD+rewardAmount+" "+ChatColor.WHITE+econ.currencyNameSingular());
             }
+            try{
             Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("BeyondWartime"), new Runnable(){
 				@Override
 				public void run() {
@@ -528,6 +530,17 @@ public class War {
 				}
             	
             }, 60);
+            }catch(Exception e){
+        		System.out.println("THERE WAS A FUCKING PROBLEM WITH YOUR SYNC TIMER LIHAD.  DEFAULTING");
+            	int breakback = 0;
+	            while(!world.getPlayers().isEmpty()){
+	            	world.getPlayers().get(0).teleport(Bukkit.getWorld("world").getSpawnLocation());
+	            	if(breakback > 200){
+	            		System.out.println("THERE WAS A FUCKING PROBLEM WITH REMOVING PLAYERS FROM THE WAR WORLD");
+	            		break;
+	            	}
+	            }		
+            }
         }
     }
 
