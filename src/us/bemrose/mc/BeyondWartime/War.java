@@ -216,7 +216,7 @@ public class War {
         int numTeams = config.getInt("number_of_teams", 3);
         for (int i = 0; i < numTeams; i++) {
         	String rndTeamName = (String)teamNames.keySet().toArray()[new Random().nextInt(teamNames.size())];
-            teams.add(new Team(rndTeamName, teamNames.get(rndTeamName)));
+            teams.add(new Team(rndTeamName, teamNames.remove(rndTeamName)));
         }
 
         broadcastWorldMessage(world, "War is starting!  Teams are as follows:");
