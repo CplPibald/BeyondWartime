@@ -112,7 +112,7 @@ public class BeyondWartime
 
     @EventHandler
     public void onNameTag(PlayerReceiveNameTagEvent event) {
-    	if(event.getNamedPlayer().getWorld().getName().equalsIgnoreCase("war") && war.isFighting(event.getNamedPlayer())){
+    	if(event.getNamedPlayer().getWorld().getName().equalsIgnoreCase("war") &&  war.isFighting(event.getNamedPlayer()) &&  war.isFighting(event.getPlayer())){
     		if(war.getPlayerTeam(event.getPlayer()).equals(war.getPlayerTeam(event.getNamedPlayer()))){
     			event.setTag(war.getPlayerTeam(event.getNamedPlayer()).getColor() + event.getNamedPlayer().getName());
     		}else{
