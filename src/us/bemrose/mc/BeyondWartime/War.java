@@ -511,17 +511,23 @@ public class War {
 
             for (Player p : winner.getPlayers()) {
                 double rewardAmount = config.getDouble("rewards.conquer_zone", 100);
-                econ.depositPlayer(p.getName(), rewardAmount);
+                econ.bankDeposit(p.getName(), rewardAmount);
                 p.sendMessage("You were rewarded "+ChatColor.GOLD+rewardAmount+" "+ChatColor.WHITE+econ.currencyNameSingular());
             }
-            int breakback = 0;
-            while(!world.getPlayers().isEmpty()){
-            	world.getPlayers().get(0).teleport(Bukkit.getWorld("world").getSpawnLocation());
-            	if(breakback > 200){
-            		System.out.println("THERE WAS A FUCKING PROBLEM WITH REMOVING PLAYERS FROM THE WAR WORLD");
-            		break;
-            	}
-            }
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("BeyondWartime"), new Runnable(){
+				@Override
+				public void run() {
+					int breakback = 0;
+		            while(!world.getPlayers().isEmpty()){
+		            	world.getPlayers().get(0).teleport(Bukkit.getWorld("world").getSpawnLocation());
+		            	if(breakback > 200){
+		            		System.out.println("THERE WAS A FUCKING PROBLEM WITH REMOVING PLAYERS FROM THE WAR WORLD");
+		            		break;
+		            	}
+		            }					
+				}
+            	
+            }, 60);
         }
     }
 
