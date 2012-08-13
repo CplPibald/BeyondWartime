@@ -22,6 +22,8 @@ public class BeyondWartime
     java.util.List<Warzone> warzones = new java.util.LinkedList<Warzone>();
     java.util.Map<Player, ClickContext> pendingClicks = new java.util.HashMap<Player, ClickContext>();
     org.bukkit.World warWorld = null; 
+    org.bukkit.World warWorldTemp = null; 
+
 
     public void onEnable() {
         getServer().getPluginManager().registerEvents(this, this);
@@ -42,6 +44,7 @@ public class BeyondWartime
                 // War timer - runs every second
                 if(war != null) {
                     if(war.WarHasEnded()) {
+                    	warWorldTemp = war.world;
                         triggerEndTimerTeleport();
                         war = null;
                     }
@@ -58,8 +61,8 @@ public class BeyondWartime
 			@Override
 			public void run() {
 		        int breakback = 0;
-		        while(!war.world.getPlayers().isEmpty()){
-		        	war.world.getPlayers().get(0).teleport(Bukkit.getWorld("world").getSpawnLocation());
+		        while(!warWorldTemp.getPlayers().isEmpty()){
+		        	warWorldTemp.getPlayers().get(0).teleport(Bukkit.getWorld("world").getSpawnLocation());
 		        	if(breakback > 200){
 		        		System.out.println("THERE WAS A FUCKING PROBLEM WITH REMOVING PLAYERS FROM THE WAR WORLD");
 		        		break;
