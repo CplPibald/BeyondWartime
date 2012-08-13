@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
@@ -33,11 +34,14 @@ public class War {
     static class Team {
 
         String name;
+        ChatColor color;
+
         Set<Player> players = new HashSet<Player>();
 
-        Team(String n) { name = n; }
+        Team(String n, ChatColor c) { name = n; color = c;}
 
         public String getName() { return name; }
+        public ChatColor getColor() { return color; }
 
         public void addPlayer(Player p) { players.add(p); }
         public void removePlayer(Player p) { players.remove(p); }
@@ -96,7 +100,7 @@ public class War {
     java.util.Random random = new java.util.Random();
     List<Player> playersWhoNeedStartingKit = new LinkedList<Player>();
 
-    static final Team Contested = new Team("Contested");
+    static final Team Contested = new Team("Contested",ChatColor.BLACK);
 
     org.bukkit.configuration.ConfigurationSection config;
     
@@ -196,23 +200,23 @@ public class War {
             return;
         }
     
-        LinkedList<String> teamNames = new LinkedList<String>(Arrays.asList(
-                "Marauders",
-                "Crusaders",
-                "Destroyers",
-                "Bonebreakers",
-                "Buccaneers",
-                "Plunderers",
-                "Assassins",
-                "Templars",
-                "Imperials",
-                "Stormcloaks"
-                ));
-        java.util.Collections.shuffle(teamNames);
+        Map<String,ChatColor> teamNames = new HashMap<String,ChatColor>(){{
+        	put("Marauders",ChatColor.GREEN);
+        	put("Crusaders",ChatColor.WHITE);
+        	put("Destroyers",ChatColor.DARK_AQUA);
+        	put("Bonebreakers",ChatColor.GRAY);
+        	put("Buccaneers",ChatColor.AQUA);
+        	put("Plunderers",ChatColor.GOLD);
+        	put("Assassins",ChatColor.RED);
+        	put("Templars",ChatColor.DARK_PURPLE);
+        	put("Imperials",ChatColor.LIGHT_PURPLE);
+        	put("Stormcloaks",ChatColor.BLUE);
 
+        }};
         int numTeams = config.getInt("number_of_teams", 3);
         for (int i = 0; i < numTeams; i++) {
-            teams.add(new Team(teamNames.pop()));
+        	String rndTeamName = (String)teamNames.keySet().toArray()[new Random().nextInt(teamNames.size())];
+            teams.add(new Team(rndTeamName, teamNames.get(rndTeamName)));
         }
 
         broadcastWorldMessage(world, "War is starting!  Teams are as follows:");
