@@ -491,15 +491,15 @@ public class War {
             }
 
             if (winner == null) {
-                broadcastWorldMessage(world, "" + ChatColor.GRAY + "Nobody captured the " + node.name);
+            	Bukkit.getServer().broadcastMessage("" + ChatColor.GRAY + "Nobody captured the " + node.name);
                 continue;
             }
             
-            broadcastWorldMessage(world, "" + ChatColor.GOLD + winner.getName() + ChatColor.GRAY + " has won the " + node.name);
+            Bukkit.getServer().broadcastMessage("" + ChatColor.GOLD + winner.getName() + ChatColor.GRAY + " has won the " + node.name);
 
             //Reward
             if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
-                broadcastWorldMessage(world, "Can't find economy plugin!  Nobody gets any rewards!");
+            	Bukkit.getServer().broadcastMessage("Can't find economy plugin!  Nobody gets any rewards!");
             }
             //RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> rsp = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
             // if (rsp == null) {
@@ -512,6 +512,7 @@ public class War {
             for (Player p : winner.getPlayers()) {
                 double rewardAmount = config.getDouble("rewards.conquer_zone", 100);
                 econ.depositPlayer(p.getName(), rewardAmount);
+                p.sendMessage("You were rewarded "+ChatColor.GOLD+rewardAmount+" "+ChatColor.WHITE+econ.currencyNameSingular());
             }
             int breakback = 0;
             while(!world.getPlayers().isEmpty()){
