@@ -290,6 +290,7 @@ public class BeyondWartime
                     sender.sendMessage("Put on your best gear, and load up on ender pearls.  You're signed up!");
                     if (war.registerPlayer((Player)sender)) {
                         Bukkit.getServer().broadcastMessage(ChatColor.GREEN.toString() + sender.getName() + ChatColor.WHITE + " straps on a pack and prepares for WAR!");
+                        Bukkit.getServer().dispatchCommand(this.getServer().getConsoleSender(), "pvptimer remove "+((Player)sender).getName());
                     }
                 }
                 else {
