@@ -42,6 +42,7 @@ public class BeyondWartime
                 // War timer - runs every second
                 if(war != null) {
                     if(war.WarHasEnded()) {
+                        triggerEndTimerTeleport();
                         war = null;
                     }
                     else {
@@ -51,6 +52,22 @@ public class BeyondWartime
             }
         },200L, 20L);
 
+    }
+   void triggerEndTimerTeleport(){
+        this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+			@Override
+			public void run() {
+		        int breakback = 0;
+		        while(!war.world.getPlayers().isEmpty()){
+		        	war.world.getPlayers().get(0).teleport(Bukkit.getWorld("world").getSpawnLocation());
+		        	if(breakback > 200){
+		        		System.out.println("THERE WAS A FUCKING PROBLEM WITH REMOVING PLAYERS FROM THE WAR WORLD");
+		        		break;
+		        	}
+		        }					
+			}
+        	
+        },60);
     }
 
     void loadConfiguration() {
