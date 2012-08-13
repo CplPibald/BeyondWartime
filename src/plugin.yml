@@ -1,0 +1,9 @@
+name: BeyondWartime
+main: us.bemrose.mc.BeyondWartime.BeyondWartime
+version: 0.1.4
+startup: postworld
+depend: [Vault]
+commands:
+  war:
+    description: BeyondWartime
+    usage: /war <join|stats|teams>
