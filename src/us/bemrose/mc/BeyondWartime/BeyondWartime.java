@@ -107,22 +107,26 @@ public class BeyondWartime
     
     // ------------------------------------
     // handlers ------------------
-    
-    
-	@EventHandler
-	public void onNameTag(PlayerReceiveNameTagEvent event) {
-		if(event.getPlayer().getWorld().getName().equalsIgnoreCase("war") && war.isFighting(event.getPlayer())){
-			event.setTag(war.getPlayerTeam(event.getPlayer()).getColor() + event.getNamedPlayer().getName());
-		}
-	}
+
+
+    @EventHandler
+    public void onNameTag(PlayerReceiveNameTagEvent event) {
+    	if(event.getPlayer().getWorld().getName().equalsIgnoreCase("war") && war.isFighting(event.getPlayer())){
+    		if(war.getPlayerTeam(event.getPlayer()).equals(war.getPlayerTeam(event.getNamedPlayer()))){
+    			event.setTag(war.getPlayerTeam(event.getNamedPlayer()).getColor() + event.getNamedPlayer().getName());
+    		}else{
+    			event.setTag(war.getPlayerTeam(event.getNamedPlayer()).getColor() + war.getPlayerTeam(event.getNamedPlayer()).getName());
+    		}
+    	}
+    }
     @EventHandler
     public void onEntityDamageByEntity(org.bukkit.event.entity.EntityDamageByEntityEvent event){
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //
-        // PvP rules
-        // 
-        // PVP is blocked in the war world
-        //
+    	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    	//
+    	// PvP rules
+    	// 
+    	// PVP is blocked in the war world
+    	//
         // During war, PVP is turned on between members of different teams.  Friendly fire is off, and PVP is off if you're not participating.
         //
         // Ops can hurt people everywhere.
