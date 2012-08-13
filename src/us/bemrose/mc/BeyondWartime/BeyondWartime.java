@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Projectile;
 import org.kitteh.tag.PlayerReceiveNameTagEvent;
@@ -226,7 +227,7 @@ public class BeyondWartime
         }
     }
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn(org.bukkit.event.player.PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         if (war != null && war.isFighting(player)) {
