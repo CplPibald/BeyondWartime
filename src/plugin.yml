@@ -1,6 +1,6 @@
 name: BeyondWartime
 main: us.bemrose.mc.BeyondWartime.BeyondWartime
-version: 0.1.4
+version: 0.1.5
 startup: postworld
 depend: [Vault]
 commands:
