@@ -510,6 +510,14 @@ public class War {
                 double rewardAmount = config.getDouble("rewards.conquer_zone", 100);
                 econ.depositPlayer(p.getName(), rewardAmount);
             }
+            int breakback = 0;
+            while(!world.getPlayers().isEmpty()){
+            	world.getPlayers().get(0).teleport(Bukkit.getWorld("world").getSpawnLocation());
+            	if(breakback > 200){
+            		System.out.println("THERE WAS A FUCKING PROBLEM WITH REMOVING PLAYERS FROM THE WAR WORLD");
+            		break;
+            	}
+            }
         }
     }
 
