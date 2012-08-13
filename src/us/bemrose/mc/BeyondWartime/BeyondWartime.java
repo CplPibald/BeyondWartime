@@ -173,11 +173,23 @@ public class BeyondWartime
     public void onPlayerQuit(org.bukkit.event.player.PlayerQuitEvent event) {
         Player player = event.getPlayer();
         if (war != null) {
-            war.unregisterPlayer(player);
+        	war.unregisterPlayer(player);
         }
         if (pendingClicks.containsKey(player)) {
-            pendingClicks.remove(player);
+        	pendingClicks.remove(player);
         }            
+    }
+    @EventHandler
+    public void onPlayerTeleport(org.bukkit.event.player.PlayerTeleportEvent event) {
+    	if(event.getFrom().getWorld().getName().equalsIgnoreCase("war") && !event.getTo().getWorld().getName().equalsIgnoreCase("war")){
+    		Player player = event.getPlayer();
+    		if (war != null) {
+    			war.unregisterPlayer(player);
+    		}
+    		if (pendingClicks.containsKey(player)) {
+    			pendingClicks.remove(player);
+    		}            
+    	}
     }
 
     @EventHandler
