@@ -334,32 +334,35 @@ public class War {
     }
 
     public void postWarScoreboard(org.bukkit.command.CommandSender sender){
-        for (WarNode node : nodes) {
-            String message = ChatColor.GOLD + node.name +" Tally | ";
+    	Date now = new Date();
+    	for (WarNode node : nodes) {
+    		String message = ChatColor.GOLD + node.name +" Tally | ";
 
-            if (node.conquered) {
-                message += ChatColor.GREEN + "Conquered by " + node.owner.getName();
-            }
-            else if (node.teamCounters.isEmpty()) {
-                message += ChatColor.DARK_AQUA + "Not claimed by any team!";
-            }
-            else {
-                for (Map.Entry entry : node.teamCounters.entrySet()) {
-                    Team team = (Team)entry.getKey();
-                    int count = (Integer)entry.getValue();
+    		if (node.conquered) {
+    			message += ChatColor.GREEN + "Conquered by " + node.owner.getName();
+    		}
+    		else if (node.teamCounters.isEmpty()) {
+    			message += ChatColor.DARK_AQUA + "Not claimed by any team!";
+    		}
+    		else {
+    			for (Map.Entry entry : node.teamCounters.entrySet()) {
+    				Team team = (Team)entry.getKey();
+    				int count = (Integer)entry.getValue();
 
-                    String countText = (team == node.owner) ? ("" + ChatColor.YELLOW + "[" + count + "]") : ("" + ChatColor.WHITE + count);
-                    message += "" + ChatColor.AQUA + team.getName() + ": " + countText + "; ";
-                }
-            }
+    				String countText = (team == node.owner) ? ("" + ChatColor.YELLOW + "[" + count + "]") : ("" + ChatColor.WHITE + count);
+    				message += "" + ChatColor.AQUA + team.getName() + ": " + countText + "; ";
+    			}
+    		}
 
-            if (sender != null) {
-                sender.sendMessage(message);
-            }
+    		if (sender != null) {
+    			sender.sendMessage(message);
+    			sender.sendMessage("Minutes Remaining: "+(endTime.getTime() - now.getTime()) / (1000 * 60));
+    		}
             else {
                 broadcastWorldMessage(world, message);
             }
         }
+        
     }
 
     public void executeWarTick() {
