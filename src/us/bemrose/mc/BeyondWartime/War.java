@@ -18,6 +18,7 @@ import org.bukkit.Location;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.Material;
 
@@ -90,6 +91,7 @@ public class War {
     LinkedList<Player> unassignedPlayers = new LinkedList<Player>();
     ArrayList<WarNode> nodes = new ArrayList<WarNode>();
     List<Team> teams = new ArrayList<Team>();
+    Map<Player, WarClass> playerClasses = new HashMap<Player, WarClass>();
     boolean allNodesConquered = false;
     int ticksToConquer = 0;
     int captureRadiusSquared = 3*3;
@@ -102,11 +104,11 @@ public class War {
 
     static final Team Contested = new Team("Contested",ChatColor.BLACK);
 
-    org.bukkit.configuration.ConfigurationSection config;
+    ConfigurationSection config;
     
     // -------------------------------------
     // Constructor --------------------
-    public War(int startDelayMinutes, int durationMinutes, List<BeyondWartime.Warzone> zones, org.bukkit.configuration.ConfigurationSection conf) {
+    public War(int startDelayMinutes, int durationMinutes, List<BeyondWartime.Warzone> zones, ConfigurationSection conf) {
 
         config = conf;
 
@@ -137,6 +139,8 @@ public class War {
         endTime = c.getTime();
 
         ticksToConquer = durationMinutes * 30;
+        
+        WarClass.initClasses(config.getConfigurationSection("classes"));
         
         postWarPendingNotice();
     }
@@ -189,6 +193,22 @@ public class War {
             unassignedPlayers.remove(p);
         }
     }
+    
+    public void setPlayerClass(Player p, String className) {
+        WarClass warclass = WarClass.getClass(className);
+        if (warclass != null) {
+            playerClasses.put(p, warclass);
+            p.sendMessage("You will respawn in the " + warclass.getName() + " class.");
+        }
+        else {
+            p.sendMessage("No such class.  You will respawn with default class.");
+        }
+    }
+    
+    public String getPlayerClass(Player p) { 
+        WarClass wc = playerClasses.get(p);
+        return (wc == null) ? null : wc.getName();
+    }
 
     public boolean WarHasEnded() { return state == WarState.ENDED; }
     
@@ -234,7 +254,7 @@ public class War {
             dest = new Location(dest.getWorld(), dest.getBlockX(), dest.getBlockY() + 2, dest.getBlockZ());
             for (Player p : t.getPlayers()) {
                 p.teleport(dest);
-                allocatePlayerStartingKit(p);
+                applyPlayerClass(p);
             }
         }
 
@@ -271,7 +291,7 @@ public class War {
                     broadcastWorldMessage(world, message);
                 }
             }
-            allocatePlayerStartingKit(p);
+            applyPlayerClass(p);
         }
     }
 
@@ -362,7 +382,12 @@ public class War {
             }
     		
         }
-		sender.sendMessage("Minutes Remaining: "+(endTime.getTime() - now.getTime()) / (1000 * 60));
+        if (sender != null) {
+            sender.sendMessage("Minutes Remaining: "+(endTime.getTime() - now.getTime()) / (1000 * 60));
+        }
+        else {
+            broadcastWorldMessage(world, "Minutes Remaining: "+(endTime.getTime() - now.getTime()) / (1000 * 60));
+        }
         
     }
 
@@ -518,19 +543,13 @@ public class War {
         }
     }
 
-    public static void allocatePlayerStartingKit(Player player) {
-        org.bukkit.inventory.PlayerInventory inv = player.getInventory();
-
-        inv.clear();
-        inv.setBoots(new ItemStack(Material.DIAMOND_BOOTS));
-        inv.setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
-        inv.setHelmet(new ItemStack(Material.DIAMOND_HELMET));
-        inv.setLeggings(new ItemStack(Material.DIAMOND_LEGGINGS));
-        inv.addItem(new ItemStack(Material.DIAMOND_SWORD));
-        inv.addItem(new ItemStack(Material.BOW));
-        inv.addItem(new ItemStack(Material.ARROW, 64));
-        inv.addItem(new ItemStack(Material.COOKED_BEEF, 6));
-        
+    public void applyPlayerClass(Player player) {
+        if (playerClasses.containsKey(player)) {
+            playerClasses.get(player).applyInv(player);
+        }
+        else {
+            WarClass.getClass("default").applyInv(player);
+        }
     }
     
     static void broadcastWorldMessage(org.bukkit.World world, String message) {

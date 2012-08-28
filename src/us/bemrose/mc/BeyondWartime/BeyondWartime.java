@@ -9,10 +9,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.ChatColor;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Projectile;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.block.Sign;
+
 import org.kitteh.tag.PlayerReceiveNameTagEvent;
 
 import us.bemrose.mc.BeyondWartime.War.Team;
+
+////////////////////
+//
+// TODO: Apply random enchants.  Sign-based classes
+//
+
 
 public class BeyondWartime
     extends org.bukkit.plugin.java.JavaPlugin
@@ -67,14 +77,15 @@ public class BeyondWartime
 		        		System.out.println("THERE WAS A FUCKING PROBLEM WITH REMOVING PLAYERS FROM THE WAR WORLD");
 		        		break;
 		        	}
-		        }					
+		        }
 			}
         	
         },60);
     }
 
     void loadConfiguration() {
-        org.bukkit.configuration.ConfigurationSection config = getConfig();
+        reloadConfig();
+        ConfigurationSection config = getConfig();
         
         // Init and write defaults for variables
         boolean writeNewDefaults = false;
@@ -94,6 +105,12 @@ public class BeyondWartime
             config.set("rewards.conquer_zone", 100);
             writeNewDefaults = true;
         }
+        if (!config.isConfigurationSection("classes.default")) {
+            ConfigurationSection section = config.createSection("classes.default");
+            section.set("armor", "leather_helmet,leather_chestplate,leather_leggings,leather_boots");
+            section.set("items", "wood_sword,bow,arrow:16,cooked_beef:3");
+            writeNewDefaults = true;
+        }
         if (writeNewDefaults) { saveConfig(); }
         
         warWorld = Bukkit.getWorld(getConfig().getString("world"));
@@ -101,8 +118,9 @@ public class BeyondWartime
 
         // Read zone list
         if (config.isConfigurationSection("zones")) {
-            org.bukkit.configuration.ConfigurationSection zones = config.getConfigurationSection("zones");
+            ConfigurationSection zones = config.getConfigurationSection("zones");
             java.util.Set<String> zoneNames = zones.getKeys(false);
+            warzones.clear();
             for (String name : zoneNames) {
                 String locationString = zones.getString(name);
                 String[] parts = locationString.split(",");
@@ -116,7 +134,7 @@ public class BeyondWartime
     
     void saveZoneList() {
 
-        org.bukkit.configuration.ConfigurationSection zoneSection = getConfig().createSection("zones");
+        ConfigurationSection zoneSection = getConfig().createSection("zones");
         
         for (Warzone zone : warzones) {
             Location l = zone.location;
@@ -129,16 +147,17 @@ public class BeyondWartime
     // ------------------------------------
     // handlers ------------------
 
-
     @EventHandler
     public void onNameTag(PlayerReceiveNameTagEvent event) {
-    	if(event.getNamedPlayer().getWorld().getName().equalsIgnoreCase("war") &&  war.isFighting(event.getNamedPlayer()) &&  war.isFighting(event.getPlayer())){
-    		if(war.getPlayerTeam(event.getPlayer()).equals(war.getPlayerTeam(event.getNamedPlayer()))){
-    			event.setTag(war.getPlayerTeam(event.getNamedPlayer()).getColor() + event.getNamedPlayer().getName());
-    		}else{
-    			event.setTag(war.getPlayerTeam(event.getNamedPlayer()).getColor() + war.getPlayerTeam(event.getNamedPlayer()).getName());
-    		}
-    	}
+        if (war != null) {
+            if(event.getNamedPlayer().getWorld() == warWorld &&  war.isFighting(event.getNamedPlayer()) &&  war.isFighting(event.getPlayer())){
+                if(war.getPlayerTeam(event.getPlayer()).equals(war.getPlayerTeam(event.getNamedPlayer()))){
+                    event.setTag(war.getPlayerTeam(event.getNamedPlayer()).getColor() + event.getNamedPlayer().getName());
+                }else{
+                    event.setTag(war.getPlayerTeam(event.getNamedPlayer()).getColor() + war.getPlayerTeam(event.getNamedPlayer()).getName());
+                }
+            }
+        }
     }
     @EventHandler
     public void onEntityDamageByEntity(org.bukkit.event.entity.EntityDamageByEntityEvent event){
@@ -219,8 +238,13 @@ public class BeyondWartime
 
     @EventHandler
     public void onPlayerInteract(org.bukkit.event.player.PlayerInteractEvent event){
-    
+
+        // Only care about block punching
+        if (event.getAction() != org.bukkit.event.block.Action.LEFT_CLICK_BLOCK) { return; }
+
         Player player = event.getPlayer();
+        Block block = event.getClickedBlock();
+
         // If player just entered a command, complete it here
         if (pendingClicks.containsKey(player)) {
         
@@ -229,22 +253,37 @@ public class BeyondWartime
             event.setCancelled(true);
 
             if ((new java.util.Date()).before(context.expiry)) {
-                if (event.getAction() == org.bukkit.event.block.Action.LEFT_CLICK_BLOCK) {
-                    org.bukkit.block.Block block = event.getClickedBlock();
-                    if (block.getLocation().getWorld() == warWorld) {
-                        Warzone zone = new Warzone(context.name, block.getLocation());
-                        warzones.add(zone);
-                        saveZoneList();
-                        player.sendMessage("Warzone " + context.name + " created.");
-                        return;
-                    }
-                    else {
-                        player.sendMessage("Wrong world!  Need to be in " + warWorld.getName());
-                    }
+                if (block.getLocation().getWorld() == warWorld) {
+                    Warzone zone = new Warzone(context.name, block.getLocation());
+                    warzones.add(zone);
+                    saveZoneList();
+                    player.sendMessage("Warzone " + context.name + " created.");
+                    return;
+                }
+                else {
+                    player.sendMessage("Wrong world!  Need to be in " + warWorld.getName());
                 }
             }
             player.sendMessage("Zone creation canceled.");
         }
+
+        // Handle sign punching to set class
+        if (war != null) {
+            if (block.getLocation().getWorld() == warWorld) {
+                org.bukkit.block.BlockState state = block.getState();
+                if (state instanceof Sign) {
+                    Sign sign = (Sign)state;
+                    if (sign.getLine(0).equalsIgnoreCase("Class")) {
+                        String className = sign.getLine(1);
+                        war.setPlayerClass(player, className);
+                        
+                        // For those creative-mode folks, don't destroy the sign
+                        event.setCancelled(true);
+                    }
+                }
+            }
+        }
+        
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -255,7 +294,7 @@ public class BeyondWartime
             if (loc.getWorld() != warWorld) {
                 event.setRespawnLocation(warWorld.getSpawnLocation());
             }
-            war.allocatePlayerStartingKit(event.getPlayer());
+            war.applyPlayerClass(event.getPlayer());
         }
     }
 
@@ -287,10 +326,14 @@ public class BeyondWartime
             if (arg[0].equalsIgnoreCase("join")) {
                 if (war == null) { sender.sendMessage("Server is not at war.  Beg an admin to start one."); return true; }
                 if (sender instanceof Player) {
+                    Player player = (Player)sender;
                     sender.sendMessage("Put on your best gear, and load up on ender pearls.  You're signed up!");
-                    if (war.registerPlayer((Player)sender)) {
+                    if (war.registerPlayer(player)) {
                         Bukkit.getServer().broadcastMessage(ChatColor.GREEN.toString() + sender.getName() + ChatColor.WHITE + " straps on a pack and prepares for WAR!");
-                        Bukkit.getServer().dispatchCommand(this.getServer().getConsoleSender(), "pvptimer remove "+((Player)sender).getName());
+                        Bukkit.getServer().dispatchCommand(this.getServer().getConsoleSender(), "pvptimer remove "+(player).getName());
+                    }
+                    if (arg.length >= 2) {
+                        war.setPlayerClass(player, arg[1]);
                     }
                 }
                 else {
@@ -304,7 +347,32 @@ public class BeyondWartime
                 war.postWarTeams(sender);
                 return true;
             }
-                
+            
+            if (arg[0].equalsIgnoreCase("class")) {
+                if (war == null) { sender.sendMessage("Server is not at war."); return true; }
+                if (sender instanceof Player) {
+                    Player player = (Player)sender;
+                    if (arg.length < 2) {
+                        String c = war.getPlayerClass(player);
+                        if (c != null) {
+                            player.sendMessage("You are class " + c);
+                        }
+                        String message = "Valid classes: ";
+                        for (String className : getConfig().getConfigurationSection("classes").getKeys(false)) {
+                            message += className + " ";
+                        }
+                        player.sendMessage(message);
+                    }
+                    else {
+                        war.setPlayerClass(player, arg[1]);
+                    }
+                }
+                else {
+                    sender.sendMessage("Console can't join wars! You don't have enough gear.");
+                }
+                return true;
+            }
+
             // Everything below here is op-only
             if (!sender.isOp()) { return false; }
 
@@ -369,6 +437,7 @@ public class BeyondWartime
             
             if (arg[0].equalsIgnoreCase("reload")) {
                 loadConfiguration();
+                sender.sendMessage("War configuration reloaded.");
                 return true;
             }
         }
