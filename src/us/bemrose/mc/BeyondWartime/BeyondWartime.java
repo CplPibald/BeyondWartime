@@ -61,6 +61,7 @@ public class BeyondWartime
                     else {
                         war.executeWarTick();
                     }
+                    clearWorldItemDrops();
                 }
             }
         },200L, 20L);
@@ -81,6 +82,12 @@ public class BeyondWartime
 			}
         	
         },60);
+    }
+    
+    void clearWorldItemDrops() {
+        for (org.bukkit.entity.Entity e : warWorld.getEntitiesByClass(org.bukkit.entity.Item.class)) {
+            e.remove();
+        }
     }
 
     void loadConfiguration() {

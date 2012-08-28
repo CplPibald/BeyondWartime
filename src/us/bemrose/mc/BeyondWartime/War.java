@@ -198,10 +198,13 @@ public class War {
         WarClass warclass = WarClass.getClass(className);
         if (warclass != null) {
             playerClasses.put(p, warclass);
-            p.sendMessage("You will respawn in the " + warclass.getName() + " class.");
+            p.sendMessage("You are now in the " + warclass.getName() + " class.");
         }
         else {
-            p.sendMessage("No such class.  You will respawn with default class.");
+            p.sendMessage("You are now in the default class.");
+        }
+        if (state == WarState.RUNNING) {
+            applyPlayerClass(p);
         }
     }
     
