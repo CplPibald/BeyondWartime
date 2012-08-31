@@ -129,12 +129,12 @@ public class Statistics implements Listener {
 			incrementTotalDeathsByX(Bukkit.getServer().getPlayer((String)deaths.keySet().toArray()[i]) ,deaths.get(deaths.keySet().toArray()[i]));
 			resetDeaths();
 		}
-		for(int i = 0;i<totaldamagedealt.size();i++){
-			incrementDamageDealtByX(Bukkit.getServer().getPlayer((String)totaldamagedealt.keySet().toArray()[i]) ,totaldamagedealt.get(totaldamagedealt.keySet().toArray()[i]));
+		for(int i = 0;i<damagedealt.size();i++){
+			incrementTotalDamageDealtByX(Bukkit.getServer().getPlayer((String)damagedealt.keySet().toArray()[i]) ,damagedealt.get(damagedealt.keySet().toArray()[i]));
 			resetDamageDealt();
 		}
-		for(int i = 0;i<totaldamagereceived.size();i++){
-			incrementTotalDamageReceivedByX(Bukkit.getServer().getPlayer((String)totaldamagereceived.keySet().toArray()[i]) ,totaldamagereceived.get(totaldamagereceived.keySet().toArray()[i]));
+		for(int i = 0;i<damagereceived.size();i++){
+			incrementTotalDamageReceivedByX(Bukkit.getServer().getPlayer((String)damagereceived.keySet().toArray()[i]) ,damagereceived.get(damagereceived.keySet().toArray()[i]));
 			resetDamageReceived();
 		}
 	}
