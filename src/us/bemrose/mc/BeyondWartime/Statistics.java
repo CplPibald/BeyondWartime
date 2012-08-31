@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -26,6 +27,8 @@ public class Statistics implements Listener {
 	private static Map<String, Integer> totaldamagedealt = new HashMap<String, Integer>();
 	private static Map<String, Integer> totaldamagereceived = new HashMap<String, Integer>();
 	private static Map<String, Integer> timeplayed = new HashMap<String, Integer>();
+	private static Map<String, Integer> nodescaptured = new HashMap<String, Integer>();
+
 
 	public static void init(){
 		System.out.println("Begin reading wartime statistics...");
@@ -59,7 +62,6 @@ public class Statistics implements Listener {
         	timeplayed.put((String)statistics.getConfigurationSection("Players").getKeys(false).toArray()[i], statistics.getInt("Players."+statistics.getConfigurationSection("Players").getKeys(false).toArray()[i]+".timeplayed"));
         }
 		System.out.println("End reading wartime statistics...");
-
 	}
 	private static void loadStatFile(YamlConfiguration config, File file) {
         try {
@@ -100,7 +102,29 @@ public class Statistics implements Listener {
 			e.printStackTrace();
 		}
 	}
+	public static void endRound(){
+		for(int i = 0;i<kills.size();i++){
+			incrementTotalKillsByX(Bukkit.getServer().getPlayer((String)kills.keySet().toArray()[i]) ,kills.get(kills.keySet().toArray()[i]));
+			resetKills();
+		}
+		for(int i = 0;i<deaths.size();i++){
+			incrementTotalDeathsByX(Bukkit.getServer().getPlayer((String)deaths.keySet().toArray()[i]) ,deaths.get(deaths.keySet().toArray()[i]));
+			resetDeaths();
+		}
+		for(int i = 0;i<totaldamagedealt.size();i++){
+			incrementDamageDealtByX(Bukkit.getServer().getPlayer((String)totaldamagedealt.keySet().toArray()[i]) ,totaldamagedealt.get(totaldamagedealt.keySet().toArray()[i]));
+			resetDamageDealt();
+		}
+		for(int i = 0;i<totaldamagereceived.size();i++){
+			incrementTotalDamageReceivedByX(Bukkit.getServer().getPlayer((String)totaldamagereceived.keySet().toArray()[i]) ,totaldamagereceived.get(totaldamagereceived.keySet().toArray()[i]));
+			resetDamageReceived();
+		}
+	}
 	
+	public static int getNodesCaptured(Player player){return nodescaptured.get(player.getName());}
+	public static void incrementNodesCaptured(Player player){nodescaptured.put(player.getName(), nodescaptured.get(player.getName())+1);}
+	public static void incrementNodesCapturedByX(Player player, int x){nodescaptured.put(player.getName(), nodescaptured.get(player.getName())+x);}
+	public static void setNodesCaptured(Player player, int x){nodescaptured.put(player.getName(), x);}
 	
 	public static int getKills(Player player){return kills.get(player.getName());}
 	public static void incrementKills(Player player){kills.put(player.getName(), kills.get(player.getName())+1);}
