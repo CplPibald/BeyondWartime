@@ -12,6 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Projectile;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.block.Sign;
 
 import org.kitteh.tag.PlayerReceiveNameTagEvent;
