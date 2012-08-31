@@ -136,7 +136,7 @@ public class Statistics implements Listener {
 	public static void resetKills(){kills.clear();}
 
 	public static int getDeaths(Player player){return deaths.get(player.getName());}
-	public static void incrementDeaths(Player player){deaths.put(player.getName(), deaths.get(player.getName())+1);}
+	public static void incrementDeaths(Player player){deaths.put(player.getName(), ((int)deaths.get(player.getName()))+1);}
 	public static void incrementDeathsByX(Player player, int x){deaths.put(player.getName(), deaths.get(player.getName())+x);}
 	public static void setDeaths(Player player, int x){deaths.put(player.getName(), x);}
 	public static void resetDeaths(){deaths.clear();}
