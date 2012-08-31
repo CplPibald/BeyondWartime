@@ -34,32 +34,35 @@ public class Statistics implements Listener {
 		System.out.println("Begin reading wartime statistics...");
         loadStatFile(statistics, statFile);
         totalkills.clear();
-        for(int i = 0;i<statistics.getConfigurationSection("Players").getKeys(false).size();i++){
-        	totalkills.put((String)statistics.getConfigurationSection("Players").getKeys(false).toArray()[i], statistics.getInt("Players."+statistics.getConfigurationSection("Players").getKeys(false).toArray()[i]+".totalkills"));
-        }
-        totaldeaths.clear();
-        for(int i = 0;i<statistics.getConfigurationSection("Players").getKeys(false).size();i++){
-        	totaldeaths.put((String)statistics.getConfigurationSection("Players").getKeys(false).toArray()[i], statistics.getInt("Players."+statistics.getConfigurationSection("Players").getKeys(false).toArray()[i]+".totaldeaths"));
-        }
-        wins.clear();
-        for(int i = 0;i<statistics.getConfigurationSection("Players").getKeys(false).size();i++){
-        	wins.put((String)statistics.getConfigurationSection("Players").getKeys(false).toArray()[i], statistics.getInt("Players."+statistics.getConfigurationSection("Players").getKeys(false).toArray()[i]+".wins"));
-        }
-        losses.clear();
-        for(int i = 0;i<statistics.getConfigurationSection("Players").getKeys(false).size();i++){
-        	losses.put((String)statistics.getConfigurationSection("Players").getKeys(false).toArray()[i], statistics.getInt("Players."+statistics.getConfigurationSection("Players").getKeys(false).toArray()[i]+".losses"));
-        }
-        totaldamagedealt.clear();
-        for(int i = 0;i<statistics.getConfigurationSection("Players").getKeys(false).size();i++){
-        	totaldamagedealt.put((String)statistics.getConfigurationSection("Players").getKeys(false).toArray()[i], statistics.getInt("Players."+statistics.getConfigurationSection("Players").getKeys(false).toArray()[i]+".totaldamagedealt"));
-        }
-        totaldamagereceived.clear();
-        for(int i = 0;i<statistics.getConfigurationSection("Players").getKeys(false).size();i++){
-        	totaldamagereceived.put((String)statistics.getConfigurationSection("Players").getKeys(false).toArray()[i], statistics.getInt("Players."+statistics.getConfigurationSection("Players").getKeys(false).toArray()[i]+".totaldamagereceived"));
-        }
-        timeplayed.clear();
-        for(int i = 0;i<statistics.getConfigurationSection("Players").getKeys(false).size();i++){
-        	timeplayed.put((String)statistics.getConfigurationSection("Players").getKeys(false).toArray()[i], statistics.getInt("Players."+statistics.getConfigurationSection("Players").getKeys(false).toArray()[i]+".timeplayed"));
+        org.bukkit.configuration.ConfigurationSection section = statistics.getConfigurationSection("Players");
+        if (section != null) {
+            for(int i = 0;i< section.getKeys(false).size();i++){
+                totalkills.put((String)section.getKeys(false).toArray()[i], statistics.getInt("Players."+section.getKeys(false).toArray()[i]+".totalkills"));
+            }
+            totaldeaths.clear();
+            for(int i = 0;i<section.getKeys(false).size();i++){
+                totaldeaths.put((String)section.getKeys(false).toArray()[i], statistics.getInt("Players."+section.getKeys(false).toArray()[i]+".totaldeaths"));
+            }
+            wins.clear();
+            for(int i = 0;i<section.getKeys(false).size();i++){
+                wins.put((String)section.getKeys(false).toArray()[i], statistics.getInt("Players."+section.getKeys(false).toArray()[i]+".wins"));
+            }
+            losses.clear();
+            for(int i = 0;i<section.getKeys(false).size();i++){
+                losses.put((String)section.getKeys(false).toArray()[i], statistics.getInt("Players."+section.getKeys(false).toArray()[i]+".losses"));
+            }
+            totaldamagedealt.clear();
+            for(int i = 0;i<section.getKeys(false).size();i++){
+                totaldamagedealt.put((String)section.getKeys(false).toArray()[i], statistics.getInt("Players."+section.getKeys(false).toArray()[i]+".totaldamagedealt"));
+            }
+            totaldamagereceived.clear();
+            for(int i = 0;i<section.getKeys(false).size();i++){
+                totaldamagereceived.put((String)section.getKeys(false).toArray()[i], statistics.getInt("Players."+section.getKeys(false).toArray()[i]+".totaldamagereceived"));
+            }
+            timeplayed.clear();
+            for(int i = 0;i<section.getKeys(false).size();i++){
+                timeplayed.put((String)section.getKeys(false).toArray()[i], statistics.getInt("Players."+section.getKeys(false).toArray()[i]+".timeplayed"));
+            }
         }
 		System.out.println("End reading wartime statistics...");
 	}
