@@ -118,7 +118,7 @@ public class Statistics implements Listener {
         for(int i = 0;i<timeplayed.size();i++){
         	statistics.set(("Players."+timeplayed.keySet().toArray()[i]+".timeplayed"), timeplayed.get(timeplayed.keySet().toArray()[i]));
         }
-        for(int i = 0;i<timeplayed.size();i++){
+        for(int i = 0;i<nodescaptured.size();i++){
         	statistics.set(("Players."+nodescaptured.keySet().toArray()[i]+".nodescaptured"), nodescaptured.get(nodescaptured.keySet().toArray()[i]));
         }
 		try {

@@ -449,8 +449,12 @@ public class War {
         }
 
         // Otherwise, war is running
-
+        
         // Check if it should end.
+        for(int j = 0; j<teams.size();j++){
+        	for(int i = 0; i<teams.get(j).getPlayers().length;i++){
+        		Statistics.incrementTimePlayed(teams.get(j).getPlayers()[i]);                       }
+        }        
         Date now = new Date();
         if (allNodesConquered || now.after(endTime)) {
             endWar();
