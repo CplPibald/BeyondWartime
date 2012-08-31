@@ -581,9 +581,10 @@ public class War {
             net.milkbowl.vault.economy.Economy econ = Bukkit.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class).getProvider();
 
             for (Player p : winner.getPlayers()) {
-            	double rewardAmount = config.getDouble("rewards.conquer_zone", 100);
-            	econ.bankDeposit(p.getName(), rewardAmount);
-            	p.sendMessage("You were rewarded "+ChatColor.GOLD+rewardAmount+" "+ChatColor.WHITE+econ.currencyNameSingular());
+                double rewardAmount = config.getDouble("rewards.conquer_zone", 100);
+                econ.bankDeposit(p.getName(), rewardAmount);
+                Statistics.incrementWins(p);
+                p.sendMessage("You were rewarded "+ChatColor.GOLD+rewardAmount+" "+ChatColor.WHITE+econ.currencyNameSingular());
             }
         }
         cancelStreak = 0;

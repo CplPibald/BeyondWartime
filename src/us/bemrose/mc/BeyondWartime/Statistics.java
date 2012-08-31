@@ -30,24 +30,31 @@ public class Statistics implements Listener {
 	public static void init(){
 		System.out.println("Begin reading wartime statistics...");
         loadStatFile(statistics, statFile);
+        totalkills.clear();
         for(int i = 0;i<statistics.getConfigurationSection("Players").getKeys(false).size();i++){
         	totalkills.put((String)statistics.getConfigurationSection("Players").getKeys(false).toArray()[i], statistics.getInt("Players."+statistics.getConfigurationSection("Players").getKeys(false).toArray()[i]+".totalkills"));
         }
+        totaldeaths.clear();
         for(int i = 0;i<statistics.getConfigurationSection("Players").getKeys(false).size();i++){
         	totaldeaths.put((String)statistics.getConfigurationSection("Players").getKeys(false).toArray()[i], statistics.getInt("Players."+statistics.getConfigurationSection("Players").getKeys(false).toArray()[i]+".totaldeaths"));
         }
+        wins.clear();
         for(int i = 0;i<statistics.getConfigurationSection("Players").getKeys(false).size();i++){
         	wins.put((String)statistics.getConfigurationSection("Players").getKeys(false).toArray()[i], statistics.getInt("Players."+statistics.getConfigurationSection("Players").getKeys(false).toArray()[i]+".wins"));
         }
+        losses.clear();
         for(int i = 0;i<statistics.getConfigurationSection("Players").getKeys(false).size();i++){
         	losses.put((String)statistics.getConfigurationSection("Players").getKeys(false).toArray()[i], statistics.getInt("Players."+statistics.getConfigurationSection("Players").getKeys(false).toArray()[i]+".losses"));
         }
+        totaldamagedealt.clear();
         for(int i = 0;i<statistics.getConfigurationSection("Players").getKeys(false).size();i++){
         	totaldamagedealt.put((String)statistics.getConfigurationSection("Players").getKeys(false).toArray()[i], statistics.getInt("Players."+statistics.getConfigurationSection("Players").getKeys(false).toArray()[i]+".totaldamagedealt"));
         }
+        totaldamagereceived.clear();
         for(int i = 0;i<statistics.getConfigurationSection("Players").getKeys(false).size();i++){
         	totaldamagereceived.put((String)statistics.getConfigurationSection("Players").getKeys(false).toArray()[i], statistics.getInt("Players."+statistics.getConfigurationSection("Players").getKeys(false).toArray()[i]+".totaldamagereceived"));
         }
+        timeplayed.clear();
         for(int i = 0;i<statistics.getConfigurationSection("Players").getKeys(false).size();i++){
         	timeplayed.put((String)statistics.getConfigurationSection("Players").getKeys(false).toArray()[i], statistics.getInt("Players."+statistics.getConfigurationSection("Players").getKeys(false).toArray()[i]+".timeplayed"));
         }
@@ -69,22 +76,22 @@ public class Statistics implements Listener {
         for(int i = 0;i<totalkills.size();i++){
         	statistics.set(("Players."+totalkills.keySet().toArray()[i]+".totalkills"), totalkills.get(totalkills.keySet().toArray()[i]));
         }
-        for(int i = 0;i<totalkills.size();i++){
+        for(int i = 0;i<totaldeaths.size();i++){
         	statistics.set(("Players."+totaldeaths.keySet().toArray()[i]+".totaldeaths"), totaldeaths.get(totaldeaths.keySet().toArray()[i]));
         }
-        for(int i = 0;i<totalkills.size();i++){
+        for(int i = 0;i<wins.size();i++){
         	statistics.set(("Players."+wins.keySet().toArray()[i]+".wins"), wins.get(wins.keySet().toArray()[i]));
         }
-        for(int i = 0;i<totalkills.size();i++){
+        for(int i = 0;i<losses.size();i++){
         	statistics.set(("Players."+losses.keySet().toArray()[i]+".losses"), losses.get(losses.keySet().toArray()[i]));
         }
-        for(int i = 0;i<totalkills.size();i++){
+        for(int i = 0;i<totaldamagedealt.size();i++){
         	statistics.set(("Players."+totaldamagedealt.keySet().toArray()[i]+".totaldamagedealt"), totaldamagedealt.get(totaldamagedealt.keySet().toArray()[i]));
         }
-        for(int i = 0;i<totalkills.size();i++){
+        for(int i = 0;i<totaldamagereceived.size();i++){
         	statistics.set(("Players."+totaldamagereceived.keySet().toArray()[i]+".totaldamagereceived"), totaldamagereceived.get(totaldamagereceived.keySet().toArray()[i]));
         }
-        for(int i = 0;i<totalkills.size();i++){
+        for(int i = 0;i<timeplayed.size();i++){
         	statistics.set(("Players."+timeplayed.keySet().toArray()[i]+".timeplayed"), timeplayed.get(timeplayed.keySet().toArray()[i]));
         }
 		try {

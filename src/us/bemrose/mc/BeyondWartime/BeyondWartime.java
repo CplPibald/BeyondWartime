@@ -55,8 +55,9 @@ public class BeyondWartime
                 // War timer - runs every second
                 if(war != null) {
                     if(war.warHasEnded()) {
-                    	warWorldTemp = war.world;
+                        warWorldTemp = war.world;
                         triggerEndTimerTeleport();
+                        Statistics.saveStatistics();
                         war = null;
                     }
                     else {
@@ -72,7 +73,6 @@ public class BeyondWartime
                 }
             }
         },200L, 20L);
-
     }
    void triggerEndTimerTeleport(){
         this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
@@ -100,6 +100,8 @@ public class BeyondWartime
     void loadConfiguration() {
         reloadConfig();
         ConfigurationSection config = getConfig();
+
+        Statistics.init();
         
         // Init and write defaults for variables
         boolean writeNewDefaults = false;
