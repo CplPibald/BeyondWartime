@@ -29,7 +29,8 @@ public class War {
     enum WarState {
         PENDING,
         RUNNING,
-        ENDED
+        ENDED,
+        FUCKED
     };
 
     static class Team {
@@ -98,13 +99,15 @@ public class War {
     org.bukkit.World world;
     Date beginTime = null;
     Date endTime = null;
+    Date cancelTimer = null;
     Map<String, Team> loggedPlayers = new HashMap<String, Team>();
     java.util.Random random = new java.util.Random();
     List<Player> playersWhoNeedStartingKit = new LinkedList<Player>();
+    ConfigurationSection config;
 
     static final Team Contested = new Team("Contested",ChatColor.BLACK);
 
-    ConfigurationSection config;
+    static int cancelStreak = 0;
     
     // -------------------------------------
     // Constructor --------------------
@@ -117,15 +120,13 @@ public class War {
             nodes.add(wn);
         }
         if (nodes.size() == 0) {
-            Bukkit.getServer().broadcastMessage("Can't start war!  No warzones defined");
-            state = WarState.ENDED;
+            cancel("No warzones defined");
             return;
         }
         String worldName = config.getString("world");
         world = Bukkit.getWorld(worldName);
         if (world == null) {
-            Bukkit.getServer().broadcastMessage("Can't start war!  World '" + worldName + "' is not loaded.");
-            state = WarState.ENDED;
+            cancel("World '" + worldName + "' is not loaded.");
             return;
         }
         
@@ -164,7 +165,16 @@ public class War {
         Team t2 = getPlayerTeam(p2);
         return ((t1 != null) && (t2 != null) && (t1 != t2));
     }
-
+    
+    int getWarPlayerCount()  {
+        int count = unassignedPlayers.size();
+        
+        for (Team t : teams) {
+            count += t.size();
+        }
+        return count;
+    }
+    
     // -------------------------------------
     // Methods --------------------
     public boolean registerPlayer(Player p) {
@@ -179,6 +189,13 @@ public class War {
         if (p.getLocation().getWorld() != world) {
             p.teleport(world.getSpawnLocation());
         }
+
+        if (cancelTimer != null) {
+            if (getWarPlayerCount() >= config.getInt("minimum_players", 6)) {
+                cancelTimer = null;
+            }
+        }
+
         return true;
     }
 
@@ -192,6 +209,15 @@ public class War {
         else if (unassignedPlayers.contains(p)) {
             unassignedPlayers.remove(p);
         }
+
+        // Check if there's enough players to maintain the war.
+        if (getWarPlayerCount() < config.getInt("minimum_players", 6)) {
+            int warTimeoutSeconds = config.getInt("not_enough_player_timeout");
+            Calendar c = Calendar.getInstance();
+            c.add(Calendar.SECOND, warTimeoutSeconds);
+
+            cancelTimer = c.getTime();
+        }        
     }
     
     public void setPlayerClass(Player p, String className) {
@@ -213,13 +239,24 @@ public class War {
         return (wc == null) ? null : wc.getName();
     }
 
-    public boolean WarHasEnded() { return state == WarState.ENDED; }
+    public boolean warHasEnded() { return state == WarState.ENDED; }
+    
+    public void cancel(String reason) { 
+        Bukkit.getServer().broadcastMessage("War is canceled: " + reason);
+        state = WarState.ENDED;
+
+        cancelStreak++;
+        // Too many cancellations mean stop trying to restart.  Reset with /war start
+        // if (cancelStreak > 10) {
+        //     state = WarState.FUCKED;
+        // }
+    }
     
     void begin() {
 
-        if (unassignedPlayers.size() < 3) {
-            Bukkit.getServer().broadcastMessage("Less than three people signed up.  War is canceled today.");
-            state = WarState.ENDED;
+        int minPlayers = config.getInt("minimum_players", 6);
+        if (unassignedPlayers.size() < minPlayers) {
+            cancel("Less than " + minPlayers + " people signed up.");
             return;
         }
     
@@ -412,9 +449,14 @@ public class War {
         // Otherwise, war is running
 
         // Check if it should end.
-        if (allNodesConquered || (new Date()).after(endTime)) {
+        Date now = new Date();
+        if (allNodesConquered || now.after(endTime)) {
             endWar();
             return;
+        }
+        
+        if (cancelTimer != null && now.after(cancelTimer)) {
+            cancel("Too few players to carry on the fight.");
         }
 
         if (unassignedPlayers.size() > 0) {
@@ -542,8 +584,9 @@ public class War {
             	double rewardAmount = config.getDouble("rewards.conquer_zone", 100);
             	econ.bankDeposit(p.getName(), rewardAmount);
             	p.sendMessage("You were rewarded "+ChatColor.GOLD+rewardAmount+" "+ChatColor.WHITE+econ.currencyNameSingular());
-            }	
+            }
         }
+        cancelStreak = 0;
     }
 
     public void applyPlayerClass(Player player) {

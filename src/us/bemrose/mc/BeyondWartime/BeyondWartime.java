@@ -54,7 +54,7 @@ public class BeyondWartime
             public void run() {
                 // War timer - runs every second
                 if(war != null) {
-                    if(war.WarHasEnded()) {
+                    if(war.warHasEnded()) {
                     	warWorldTemp = war.world;
                         triggerEndTimerTeleport();
                         war = null;
@@ -63,6 +63,12 @@ public class BeyondWartime
                         war.executeWarTick();
                     }
                     clearWorldItemDrops();
+                }
+                else {
+                    // Start a new War.
+                    int nextWarDuration = getConfig().getInt("war_duration", 30);
+                    int nextWarStartMinutes = getConfig().getInt("intermission", 5);
+                    war = new War(nextWarStartMinutes, nextWarDuration, warzones, getConfig());
                 }
             }
         },200L, 20L);
@@ -105,8 +111,24 @@ public class BeyondWartime
             config.set("number_of_teams", 3);
             writeNewDefaults = true;
         }
+        if (!config.isSet("minimum_players")) {
+            config.set("minimum_players", 6);
+            writeNewDefaults = true;
+        }
+        if (!config.isSet("not_enough_player_timeout")) {
+            config.set("not_enough_player_timeout", 30);
+            writeNewDefaults = true;
+        }
         if (!config.isSet("capture_radius")) {
             config.set("capture_radius", 3);
+            writeNewDefaults = true;
+        }
+        if (!config.isSet("war_duration")) {
+            config.set("war_duration", 30);
+            writeNewDefaults = true;
+        }
+        if (!config.isSet("intermission")) {
+            config.set("intermission", 5);
             writeNewDefaults = true;
         }
         if (!config.isSet("rewards.conquer_zone")) {
@@ -332,7 +354,7 @@ public class BeyondWartime
             }
 
             if (arg[0].equalsIgnoreCase("join")) {
-                if (war == null) { sender.sendMessage("Server is not at war.  Beg an admin to start one."); return true; }
+                if (war == null) { sender.sendMessage("Server is not at war."); return true; }
                 if (sender instanceof Player) {
                     Player player = (Player)sender;
                     sender.sendMessage("Put on your best gear, and load up on ender pearls.  You're signed up!");
@@ -404,6 +426,18 @@ public class BeyondWartime
                 war = new War(nextWarStartMinutes, nextWarDuration, warzones, getConfig());
                 sender.sendMessage("War will start in " + nextWarStartMinutes + " minutes, and last " + nextWarDuration + " minutes.");
                 return true;
+            }
+
+            if (arg[0].equalsIgnoreCase("end")) {
+                if (war != null) {
+                    if (arg.length >= 2 && Integer.parseInt(arg[1]) == 0) {
+                        war.cancel("An admin said so.");
+                    }
+                    else {
+                        war.endWar();
+                    }
+                    return true;
+                }
             }
             
             else if (arg[0].equalsIgnoreCase("createzone")) {
