@@ -56,7 +56,6 @@ public class BeyondWartime
                 if(war != null) {
                     if(war.warHasEnded()) {
                         warWorldTemp = war.world;
-                        triggerEndTimerTeleport();
                         Statistics.saveStatistics();
                         war = null;
                     }
