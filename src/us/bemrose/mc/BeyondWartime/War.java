@@ -76,6 +76,8 @@ public class War {
         public int captureCounter = 0;
         public Team owner = null;
         public Team captureTeamTemp;
+        
+        public List<Player> capturingPlayers = new LinkedList<Player>();
 
         public Map<Team, Integer> teamCounters = new HashMap<Team, Integer>();
         public boolean conquered = false;
@@ -466,6 +468,7 @@ public class War {
 
         for (WarNode node : nodes) {
             node.captureTeamTemp = null;
+            node.capturingPlayers.clear();
         }
 
         List<Player> players = world.getPlayers();
@@ -493,10 +496,12 @@ public class War {
                             node.captureTeamTemp = getPlayerTeam(player);
                             node.captureCounter++;
                             player.sendMessage(ChatColor.GOLD+"Taking point. "+node.captureCounter+"/30");
+                            node.capturingPlayers.add(player);
                         }
                         else if( getPlayerTeam(player) == node.captureTeamTemp ) {
                             node.captureCounter++;
                             player.sendMessage(ChatColor.GOLD+"Taking point. "+node.captureCounter+"/30");
+                            node.capturingPlayers.add(player);
                         }else{
                             node.captureTeamTemp = Contested;
                             node.captureCounter = 0;
@@ -516,6 +521,10 @@ public class War {
                     node.owner = node.captureTeamTemp;
                     node.captureCounter = 0;
                     broadcastWorldMessage(world, "The " + ChatColor.RED + node.owner.getName() + " have taken control of " + node.name + "!");
+
+                    for (Player p : node.capturingPlayers) {
+                        Statistics.incrementNodesCaptured(p);
+                    }
 
                     if (!node.teamCounters.containsKey(node.owner)) {
                         node.teamCounters.put(node.owner, 0);
