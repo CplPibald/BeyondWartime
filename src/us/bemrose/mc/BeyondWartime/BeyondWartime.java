@@ -73,22 +73,6 @@ public class BeyondWartime
             }
         },200L, 20L);
     }
-   void triggerEndTimerTeleport(){
-        this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-			@Override
-			public void run() {
-		        int breakback = 0;
-		        while(!warWorldTemp.getPlayers().isEmpty()){
-		        	warWorldTemp.getPlayers().get(0).teleport(Bukkit.getWorld("world").getSpawnLocation());
-		        	if(breakback > 200){
-		        		System.out.println("THERE WAS A FUCKING PROBLEM WITH REMOVING PLAYERS FROM THE WAR WORLD");
-		        		break;
-		        	}
-		        }
-			}
-        	
-        },60);
-    }
     
     void clearWorldItemDrops() {
         for (org.bukkit.entity.Entity e : warWorld.getEntitiesByClass(org.bukkit.entity.Item.class)) {
