@@ -63,6 +63,10 @@ public class Statistics implements Listener {
             for(int i = 0;i<section.getKeys(false).size();i++){
                 timeplayed.put((String)section.getKeys(false).toArray()[i], statistics.getInt("Players."+section.getKeys(false).toArray()[i]+".timeplayed"));
             }
+            nodescaptured.clear();
+            for(int i = 0;i<section.getKeys(false).size();i++){
+            	nodescaptured.put((String)section.getKeys(false).toArray()[i], statistics.getInt("Players."+section.getKeys(false).toArray()[i]+".nodescaptured"));
+            }
         }
 		System.out.println("End reading wartime statistics...");
 	}
@@ -113,6 +117,9 @@ public class Statistics implements Listener {
         }
         for(int i = 0;i<timeplayed.size();i++){
         	statistics.set(("Players."+timeplayed.keySet().toArray()[i]+".timeplayed"), timeplayed.get(timeplayed.keySet().toArray()[i]));
+        }
+        for(int i = 0;i<timeplayed.size();i++){
+        	statistics.set(("Players."+nodescaptured.keySet().toArray()[i]+".nodescaptured"), nodescaptured.get(nodescaptured.keySet().toArray()[i]));
         }
 		try {
 			statistics.save(statFile);
