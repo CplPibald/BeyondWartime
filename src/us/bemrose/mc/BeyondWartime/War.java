@@ -587,13 +587,13 @@ public class War {
             // }
             
             // If economy isn't found, force an exception
-            net.milkbowl.vault.economy.Economy econ = Bukkit.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class).getProvider();
+            //net.milkbowl.vault.economy.Economy econ = Bukkit.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class).getProvider();
 
             for (Player p : winner.getPlayers()) {
             	double rewardAmount = config.getDouble("rewards.conquer_zone", 100);
-            	econ.bankDeposit(p.getName(), rewardAmount);
+                //econ.bankDeposit(p.getName(), rewardAmount);
             	Statistics.incrementWins(p);
-            	p.sendMessage("You were rewarded "+ChatColor.GOLD+rewardAmount+" "+ChatColor.WHITE+econ.currencyNameSingular());
+                //p.sendMessage("You were rewarded "+ChatColor.GOLD+rewardAmount+" "+ChatColor.WHITE+econ.currencyNameSingular());
             }
         }
         for(int j = 0; j<teams.size();j++){
