@@ -69,18 +69,11 @@ class WarClass {
         org.bukkit.inventory.PlayerInventory inv = player.getInventory();
         inv.clear();
 
-        if (armor != null && armor.size() >= 1) {
-            inv.setHelmet(armor.get(0));
-            if (armor.size() >= 2) {
-                inv.setChestplate(armor.get(1));
-                if (armor.size() >= 3) {
-                    inv.setLeggings(armor.get(2));
-                    if (armor.size() >= 4) {
-                        inv.setBoots(armor.get(3));
-                    }
-                }
-            }
-        }
+        inv.setHelmet((armor != null && armor.size() >= 1) ? armor.get(0) : null);
+        inv.setChestplate((armor != null && armor.size() >= 2) ? armor.get(1) : null);
+        inv.setLeggings((armor != null && armor.size() >= 3) ? armor.get(2) : null);
+        inv.setBoots((armor != null && armor.size() >= 4) ? armor.get(3) : null);
+
         if (items != null) {
             for (ItemStack i : items) {
                 inv.addItem(i);
