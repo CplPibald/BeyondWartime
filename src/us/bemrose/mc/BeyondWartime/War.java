@@ -603,6 +603,7 @@ public class War {
         				+ChatColor.GRAY+"Deaths: "+ChatColor.GREEN+Statistics.getDeaths(teams.get(j).getPlayers()[i])+" "+ChatColor.AQUA+"("+(Statistics.getKills(teams.get(j).getPlayers()[i])/(double)Statistics.getDeaths(teams.get(j).getPlayers()[i]))+")");
         	}
         }
+        Statistics.endRound();
         cancelStreak = 0;
     }
 
