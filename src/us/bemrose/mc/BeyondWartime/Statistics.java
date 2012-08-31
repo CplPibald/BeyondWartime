@@ -66,6 +66,21 @@ public class Statistics implements Listener {
         }
 		System.out.println("End reading wartime statistics...");
 	}
+	public static void debug(){
+		System.out.println("kills: "+kills.toString());
+		System.out.println("deaths: "+deaths.toString());
+		System.out.println("totalkills: "+totalkills.toString());
+		System.out.println("totaldeaths: "+totaldeaths.toString());
+		System.out.println("wins: "+wins.toString());
+		System.out.println("losses: "+losses.toString());
+		System.out.println("damagedealt: "+damagedealt.toString());
+		System.out.println("damagereceived: "+damagereceived.toString());
+		System.out.println("totaldamagedealt: "+totaldamagedealt.toString());
+		System.out.println("totaldamagereceived: "+totaldamagereceived.toString());
+		System.out.println("timeplayed: "+timeplayed.toString());
+		System.out.println("nodescaptured: "+nodescaptured.toString());
+
+	}
 	private static void loadStatFile(YamlConfiguration config, File file) {
         try {
             config.load(file);
