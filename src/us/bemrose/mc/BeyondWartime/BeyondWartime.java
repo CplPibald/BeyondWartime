@@ -242,6 +242,11 @@ public class BeyondWartime
     }
     
     @EventHandler
+    public void onPlayerJoin(org.bukkit.event.player.PlayerJoinEvent event) {
+        if (war != null) { war.registerPlayer(event.getPlayer()); }
+    }
+
+    @EventHandler
     public void onPlayerQuit(org.bukkit.event.player.PlayerQuitEvent event) {
         Player player = event.getPlayer();
         if (war != null) {
