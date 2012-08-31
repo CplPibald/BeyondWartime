@@ -437,6 +437,7 @@ public class BeyondWartime
                     message += (String)entry.getKey() + "(" + (t != null ? t.getName() : null) + ")";
                 }
                 sender.sendMessage(message);
+                Statistics.debug();
                 return true;
             }
            
