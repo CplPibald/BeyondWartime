@@ -238,6 +238,8 @@ public class BeyondWartime
         if (war != null) {
             if (war.fightingOnDifferentTeams(attacker, hurt)) {
                 // Both players in war, on different teams
+                Statistics.incrementDamageDealtByX(attacker, event.getDamage());
+                Statistics.incrementDamageReceivedByX(attacker, event.getDamage());
                 return;
             }
         }
@@ -245,6 +247,17 @@ public class BeyondWartime
         event.setCancelled(true);
     }
 
+    @EventHandler
+    public void onPlayerDeath(org.bukkit.event.entity.PlayerDeathEvent event) {
+        Player dead = event.getEntity();
+        Statistics.incrementDeaths(dead);
+        
+        Player killer = dead.getKiller();
+        if (killer != null) { 
+            Statistics.incrementKills(killer);
+        }
+    }
+    
     @EventHandler
     public void onPlayerQuit(org.bukkit.event.player.PlayerQuitEvent event) {
         Player player = event.getPlayer();
