@@ -581,22 +581,25 @@ public class War {
             net.milkbowl.vault.economy.Economy econ = Bukkit.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class).getProvider();
 
             for (Player p : winner.getPlayers()) {
-                double rewardAmount = config.getDouble("rewards.conquer_zone", 100);
-                econ.bankDeposit(p.getName(), rewardAmount);
-                Statistics.incrementWins(p);
-                p.sendMessage("You were rewarded "+ChatColor.GOLD+rewardAmount+" "+ChatColor.WHITE+econ.currencyNameSingular());
+            	double rewardAmount = config.getDouble("rewards.conquer_zone", 100);
+            	econ.bankDeposit(p.getName(), rewardAmount);
+            	Statistics.incrementWins(p);
+            	p.sendMessage("You were rewarded "+ChatColor.GOLD+rewardAmount+" "+ChatColor.WHITE+econ.currencyNameSingular());
             }
         }
-        for(int i = 0; i<Bukkit.getServer().getOnlinePlayers().length;i++){
-        	Bukkit.getServer().getOnlinePlayers()[i].sendMessage(ChatColor.GRAY+"Kills: "+ChatColor.GREEN+Statistics.getKills(Bukkit.getServer().getOnlinePlayers()[i])
-        			+ChatColor.GRAY+"Deaths: "+ChatColor.GREEN+Statistics.getDeaths(Bukkit.getServer().getOnlinePlayers()[i])+" "+ChatColor.AQUA+"("+(Statistics.getKills(Bukkit.getServer().getOnlinePlayers()[i])/(double)Statistics.getDeaths(Bukkit.getServer().getOnlinePlayers()[i]))+")");
+        for(int j = 0; j<teams.size();j++){
+        	for(int i = 0; i<teams.get(j).getPlayers().length;i++){
+
+        		teams.get(j).getPlayers()[i].sendMessage(ChatColor.GRAY+"Kills: "+ChatColor.GREEN+Statistics.getKills(teams.get(j).getPlayers()[i])
+        				+ChatColor.GRAY+"Deaths: "+ChatColor.GREEN+Statistics.getDeaths(teams.get(j).getPlayers()[i])+" "+ChatColor.AQUA+"("+(Statistics.getKills(teams.get(j).getPlayers()[i])/(double)Statistics.getDeaths(teams.get(j).getPlayers()[i]))+")");
+        	}
         }
         cancelStreak = 0;
     }
 
     public void applyPlayerClass(Player player) {
-        if (playerClasses.containsKey(player)) {
-            playerClasses.get(player).applyInv(player);
+    	if (playerClasses.containsKey(player)) {
+    		playerClasses.get(player).applyInv(player);
         }
         else {
             WarClass.getClass("default").applyInv(player);
