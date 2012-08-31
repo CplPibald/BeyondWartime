@@ -52,7 +52,6 @@ public class Statistics implements Listener {
         	timeplayed.put((String)statistics.getConfigurationSection("Players").getKeys(false).toArray()[i], statistics.getInt("Players."+statistics.getConfigurationSection("Players").getKeys(false).toArray()[i]+".timeplayed"));
         }
 		System.out.println("End reading wartime statistics...");
-
 	}
 	private static void loadStatFile(YamlConfiguration config, File file) {
         try {
@@ -93,8 +92,6 @@ public class Statistics implements Listener {
 			e.printStackTrace();
 		}
 	}
-	
-	
 	public static int getKills(Player player){return kills.get(player.getName());}
 	public static void incrementKills(Player player){kills.put(player.getName(), kills.get(player.getName())+1);}
 	public static void incrementKillsByX(Player player, int x){kills.put(player.getName(), kills.get(player.getName())+x);}
