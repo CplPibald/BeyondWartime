@@ -596,6 +596,10 @@ public class War {
                 p.sendMessage("You were rewarded "+ChatColor.GOLD+rewardAmount+" "+ChatColor.WHITE+econ.currencyNameSingular());
             }
         }
+        for(int i = 0; i<Bukkit.getServer().getOnlinePlayers().length;i++){
+        	Bukkit.getServer().getOnlinePlayers()[i].sendMessage(ChatColor.GRAY+"Kills: "+ChatColor.GREEN+Statistics.getKills(Bukkit.getServer().getOnlinePlayers()[i])
+        			+ChatColor.GRAY+"Deaths: "+ChatColor.GREEN+Statistics.getDeaths(Bukkit.getServer().getOnlinePlayers()[i])+" "+ChatColor.AQUA+"("+(Statistics.getKills(Bukkit.getServer().getOnlinePlayers()[i])/(double)Statistics.getDeaths(Bukkit.getServer().getOnlinePlayers()[i]))+")");
+        }
         cancelStreak = 0;
     }
 

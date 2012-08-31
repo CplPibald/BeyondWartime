@@ -366,7 +366,15 @@ public class BeyondWartime
                 war.postWarScoreboard(sender);
                 return true;
             }
-
+            if(arg[0].equalsIgnoreCase("self") && sender instanceof Player){
+                Player player = (Player)sender;
+                player.sendMessage("");
+                player.sendMessage("");
+                player.sendMessage("");
+                player.sendMessage("");
+                player.sendMessage("");
+                player.sendMessage("");
+            }
             if (arg[0].equalsIgnoreCase("join")) {
                 if (war == null) { sender.sendMessage("Server is not at war."); return true; }
                 if (sender instanceof Player) {
@@ -425,7 +433,7 @@ public class BeyondWartime
                 sender.sendMessage("Unassigned players = " + war.unassignedPlayers);
                 String message = "Logged players: ";
                 for (java.util.Map.Entry entry : war.loggedPlayers.entrySet()) {
-                    War.Team t = (War.Team)entry.getValue();
+                    War.Team t = (War.Team)entry.getValue(); 
                     message += (String)entry.getKey() + "(" + (t != null ? t.getName() : null) + ")";
                 }
                 sender.sendMessage(message);
