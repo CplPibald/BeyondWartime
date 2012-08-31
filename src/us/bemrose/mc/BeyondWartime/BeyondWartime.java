@@ -238,7 +238,7 @@ public class BeyondWartime
             if (war.fightingOnDifferentTeams(attacker, hurt)) {
                 // Both players in war, on different teams
                 Statistics.incrementDamageDealtByX(attacker, event.getDamage());
-                Statistics.incrementDamageReceivedByX(attacker, event.getDamage());
+                Statistics.incrementDamageReceivedByX(hurt, event.getDamage());
                 return;
             }
         }
